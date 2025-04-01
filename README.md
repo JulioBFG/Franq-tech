@@ -1,54 +1,90 @@
-# React + TypeScript + Vite
+# Finance App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação para visualização de cotações financeiras em tempo real, com autenticação de usuários e persistência de dados.
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Autenticação de Usuários**
 
-## Expanding the ESLint configuration
+- **Visualização de Cotações**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Gráficos de Evolução**
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+  - Gráfico interativo de evolução de preços
+  - Tooltip com informações detalhadas
+  - Atualização automática a cada 30 segundos
+
+- **Interface Responsiva**
+  - Layout adaptável para diferentes tamanhos de tela
+  - Componentes interativos e feedback visual
+  - Estados de carregamento, erro e vazio
+
+## Tecnologias Utilizadas
+
+- **React** - Biblioteca para construção de interfaces
+- **TypeScript** - Tipagem estática para JavaScript
+- **Vite** - Build tool rápida e eficiente
+- **Zustand** - Gerenciamento de estado global
+- **React Router** - Navegação entre páginas
+- **Radix UI** - Componentes acessíveis e customizáveis
+- **Recharts** - Biblioteca para criação de gráficos
+- **Axios** - Cliente HTTP para requisições à API
+
+## Como Rodar o Projeto
+
+1. **Pré-requisitos**
+
+   - Node.js (versão 14 ou superior)
+   - npm ou yarn
+
+2. **Instalação**
+
+   ```bash
+   # Clonar o repositório
+   git clone https://github.com/seu-usuario/finance-app.git
+   cd finance-app
+
+   # Instalar dependências
+   npm install
+   ```
+
+3. **Desenvolvimento**
+
+   ```bash
+   # Iniciar servidor de desenvolvimento
+   npm run dev
+   ```
+
+   O aplicativo estará disponível em: http://localhost:5173
+
+4. **Build para Produção**
+
+   ```bash
+   # Gerar build otimizada
+   npm run build
+
+   # Visualizar build localmente
+   npm run preview
+   ```
+
+## Estrutura do Projeto
+
+```
+finance-app/
+├── src/
+│   ├── components/      # Componentes React
+│   ├── store/           # Estado global com Zustand
+│   ├── types/           # Definições de tipos TypeScript
+│   ├── App.tsx          # Componente principal e rotas
+│   ├── main.tsx         # Ponto de entrada
+│   └── index.css        # Estilos globais
+└── ...
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## API Utilizada
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+A aplicação consome dados da API HG Brasil Finance, que fornece cotações de:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- Moedas (Dólar, Euro, etc.)
+- Ações e índices (Ibovespa, Nasdaq, etc.)
+- Bitcoin e outras criptomoedas

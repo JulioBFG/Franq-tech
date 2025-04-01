@@ -1,154 +1,165 @@
-import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Text,
+  TextField,
+} from "@radix-ui/themes";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import Logo from "../../assets/LOGO.svg";
-import useAuth from "../../hooks/useAuth";
+import { useAuthStore } from "../../store/authStore";
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 16px;
-`;
-
-const FormCard = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-`;
-
-const Title = styled.h2`
-  margin-bottom: 24px;
-  text-align: center;
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 16px;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 8px;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-`;
-
-const Button = styled.button`
-  width: 100%;
-  padding: 10px;
-  background: #6c7cec;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-
-  &:hover {
-    background: #6c7cec;
-  }
-`;
-
-const Error = styled.p`
-  color: red;
-  margin-bottom: 16px;
-`;
-
-const StyledLink = styled(Link)`
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  color: #6c7cec;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-const Image = styled.img`
-  display: flex;
-  margin: auto 30px;
-`;
-
-const Register: React.FC = () => {
+const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const { register } = useAuth();
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+
+  const register = useAuthStore((state) => state.register);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!name || !email || !password) {
-      setError("Preencha todos os campos");
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+      setError("Por favor, preencha todos os campos.");
       return;
     }
 
-    const success = register(name, email, password);
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem.");
+      return;
+    }
 
-    if (success) {
-      navigate("/dashboard");
-    } else {
-      setError("Email já cadastrado");
+    setLoading(true);
+
+    try {
+      const success = register(name, email, password);
+
+      if (success) {
+        navigate("/dashboard");
+      } else {
+        setError("Este email já está em uso.");
+      }
+    } catch (err) {
+      setError("Ocorreu um erro ao tentar registrar.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Container>
-      <FormCard>
-        <Image src={Logo} alt="Logo" />
-        <Title>Cadastro</Title>
+    <Flex
+      justify="center"
+      align="center"
+      style={{
+        minHeight: "100vh",
+        padding: "16px",
+      }}>
+      <Box style={{ width: "100%", maxWidth: "400px" }}>
+        <Card>
+          <Box p="4">
+            <Heading size="5" mb="4" align="center">
+              Cadastro
+            </Heading>
 
-        {error && <Error>{error}</Error>}
+            {error && (
+              <Box
+                mb="3"
+                p="2"
+                style={{ backgroundColor: "#fee2e2", borderRadius: "4px" }}>
+                <Text size="2" color="red">
+                  {error}
+                </Text>
+              </Box>
+            )}
 
-        <form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label>Nome</Label>
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </FormGroup>
+            <form onSubmit={handleSubmit}>
+              <Box mb="3">
+                <Text size="2" mb="1" weight="medium">
+                  Nome
+                </Text>
+                <TextField.Root
+                  size="2"
+                  placeholder="Seu nome completo"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </Box>
 
-          <FormGroup>
-            <Label>Email</Label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </FormGroup>
+              <Box mb="3">
+                <Text size="2" mb="1" weight="medium">
+                  Email
+                </Text>
+                <TextField.Root
+                  size="2"
+                  placeholder="Seu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  required
+                />
+              </Box>
 
-          <FormGroup>
-            <Label>Senha</Label>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </FormGroup>
+              <Box mb="3">
+                <Text size="2" mb="1" weight="medium">
+                  Senha
+                </Text>
+                <TextField.Root
+                  size="2"
+                  placeholder="Crie uma senha segura"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type="password"
+                  required
+                />
+              </Box>
 
-          <Button type="submit">Cadastrar</Button>
-        </form>
+              <Box mb="4">
+                <Text size="2" mb="1" weight="medium">
+                  Confirmar Senha
+                </Text>
+                <TextField.Root
+                  size="2"
+                  placeholder="Confirme sua senha"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  type="password"
+                  required
+                />
+              </Box>
 
-        <StyledLink to="/login">Já tem conta? Faça login</StyledLink>
-      </FormCard>
-    </Container>
+              <Button
+                type="submit"
+                size="2"
+                disabled={loading}
+                style={{ width: "100%" }}>
+                {loading ? "Processando..." : "Cadastrar"}
+              </Button>
+            </form>
+
+            <Box mt="4">
+              <Text size="2">
+                Já tem uma conta?{" "}
+                <Link
+                  to="/login"
+                  style={{ color: "#3861fb", textDecoration: "none" }}>
+                  Faça login
+                </Link>
+              </Text>
+            </Box>
+          </Box>
+        </Card>
+      </Box>
+    </Flex>
   );
 };
 

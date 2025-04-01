@@ -1,120 +1,131 @@
-import { Button, TextField } from "@radix-ui/themes";
-import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Heading,
+  Text,
+  TextField,
+} from "@radix-ui/themes";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import Logo from "../../assets/LOGO.svg";
-import useAuth from "../../hooks/useAuth";
+import { useAuthStore } from "../../store/authStore";
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 16px;
-`;
-
-const FormCard = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-`;
-
-const Title = styled.h2`
-  margin-bottom: 24px;
-  text-align: center;
-`;
-
-const FormGroup = styled.div`
-  margin-bottom: 16px;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 8px;
-`;
-
-const Error = styled.p`
-  color: red;
-  margin-bottom: 16px;
-`;
-
-const StyledLink = styled(Link)`
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  color: #6c7cec;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const Image = styled.img`
-  display: flex;
-  margin: auto 30px;
-`;
-
-const Login: React.FC = () => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+
+  const login = useAuthStore((state) => state.login);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!email || !password) {
-      setError("Preencha todos os campos");
+    if (!email.trim() || !password) {
+      setError("Por favor, preencha todos os campos.");
       return;
     }
 
-    const success = login(email, password);
+    setLoading(true);
 
-    if (success) {
-      navigate("/dashboard");
-    } else {
-      setError("Email ou senha incorretos");
+    try {
+      const success = login(email, password);
+
+      if (success) {
+        navigate("/dashboard");
+      } else {
+        setError("Email ou senha incorretos.");
+      }
+    } catch (err) {
+      setError("Ocorreu um erro ao tentar fazer login.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Container>
-      <FormCard>
-        <Image src={Logo} alt="Logo" />
-        <Title>Login</Title>
-        {error && <Error>{error}</Error>}
-        <form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label>Email</Label>
-            <TextField.Root
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </FormGroup>
+    <Flex
+      justify="center"
+      align="center"
+      style={{
+        minHeight: "100vh",
+        padding: "16px",
+      }}>
+      <Box style={{ width: "100%", maxWidth: "400px" }}>
+        <Card>
+          <Box p="4">
+            <Heading size="5" mb="4" align="center">
+              Login
+            </Heading>
 
-          <FormGroup>
-            <Label>Senha</Label>
-            <TextField.Root
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </FormGroup>
+            {error && (
+              <Box
+                mb="3"
+                p="2"
+                style={{ backgroundColor: "#fee2e2", borderRadius: "4px" }}>
+                <Text size="2" color="red">
+                  {error}
+                </Text>
+              </Box>
+            )}
 
-          <Button type="submit">Entrar</Button>
-        </form>
-        <StyledLink to="/register">Não tem conta? Cadastre-se</StyledLink>
-      </FormCard>
-    </Container>
+            <form onSubmit={handleSubmit}>
+              <Box mb="3">
+                <Text size="2" mb="1" weight="medium">
+                  Email
+                </Text>
+                <TextField.Root
+                  size="2"
+                  placeholder="Seu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  required
+                />
+              </Box>
+
+              <Box mb="4">
+                <Text size="2" mb="1" weight="medium">
+                  Senha
+                </Text>
+                <TextField.Root
+                  size="2"
+                  placeholder="Sua senha"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type="password"
+                  required
+                />
+              </Box>
+
+              <Button
+                type="submit"
+                size="2"
+                disabled={loading}
+                style={{ width: "100%" }}>
+                {loading ? "Entrando..." : "Entrar"}
+              </Button>
+            </form>
+
+            <Box mt="4">
+              <Text size="2">
+                Não tem uma conta?{" "}
+                <Link
+                  to="/register"
+                  style={{ color: "#3861fb", textDecoration: "none" }}>
+                  Cadastre-se
+                </Link>
+              </Text>
+            </Box>
+          </Box>
+        </Card>
+      </Box>
+    </Flex>
   );
 };
 
