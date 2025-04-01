@@ -44,13 +44,20 @@ const CustomTooltip = ({
 const PriceChart = () => {
   const selectedItem = useFinanceStore((state) => state.selectedItem);
 
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
   const chartData =
     selectedItem?.history.map((point) => ({
-      time: new Date(point.timestamp).toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      time: formatDate(point.timestamp),
       price: point.price,
+      fullDate: new Date(point.timestamp).toLocaleString("pt-BR"),
     })) || [];
 
   return (
@@ -72,7 +79,7 @@ const PriceChart = () => {
           <EmptyState
             icon="⏳"
             title="Dados insuficientes"
-            description="Aguarde mais atualizações para visualizar a evolução de preços."
+            description="Aguarde mais atualizações horárias para visualizar a evolução de preços."
           />
         ) : (
           <Box style={{ height: "350px", width: "100%" }}>
@@ -87,7 +94,13 @@ const PriceChart = () => {
                   tick={{ fontSize: 12, fill: "#64748b" }}
                   tickFormatter={(value) => value.toLocaleString("pt-BR")}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip
+                  content={<CustomTooltip />}
+                  labelFormatter={(label) => {
+                    const item = chartData.find((item) => item.time === label);
+                    return item ? item.fullDate : label;
+                  }}
+                />
                 <Line
                   type="monotone"
                   dataKey="price"

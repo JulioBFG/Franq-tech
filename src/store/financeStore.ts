@@ -9,17 +9,44 @@ import {
 const api = axios.create({
   baseURL:
     "https://cors-anywhere.herokuapp.com/https://api.hgbrasil.com/finance",
-  headers: {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  params: {
+    format: "json",
+    key: "demo",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
   },
 });
 
 const priceHistory: Record<string, { timestamp: number; price: number }[]> = {};
 
-const MAX_HISTORY_POINTS = 20;
+const MAX_HISTORY_POINTS = 48;
+
+const mockData = {
+  currencies: {
+    USD: { name: "Dólar", buy: 5.25, variation: -0.72 },
+    EUR: { name: "Euro", buy: 6.18, variation: 0.45 },
+    GBP: { name: "Libra", buy: 7.32, variation: 0.28 },
+    BTC: { name: "Bitcoin", buy: 149352.78, variation: 2.36 },
+  },
+  stocks: {
+    IBOVESPA: {
+      name: "IBOVESPA",
+      location: "Brasil",
+      points: 127354.58,
+      variation: -1.24,
+    },
+    NASDAQ: {
+      name: "NASDAQ",
+      location: "EUA",
+      points: 15982.21,
+      variation: 0.87,
+    },
+  },
+};
 
 interface FinanceActions {
   fetchData: () => Promise<void>;
@@ -38,8 +65,22 @@ export const useFinanceStore = create<FinanceState & FinanceActions>(
       try {
         set({ loading: true, error: null });
 
-        const response = await api.get<FinanceAPIResponse>("");
-        const data = response.data;
+        let data;
+
+        try {
+          const response = await api.get<FinanceAPIResponse>("");
+          data = response.data;
+        } catch (error) {
+          console.warn("Usando dados simulados devido a erro de CORS:", error);
+
+          data = {
+            results: {
+              currencies: mockData.currencies,
+              stocks: mockData.stocks,
+            },
+          };
+        }
+
         const currentTime = Date.now();
 
         const processedItems: FinanceItem[] = [];
@@ -144,9 +185,8 @@ export const useFinanceStore = create<FinanceState & FinanceActions>(
   })
 );
 
-export const startFinanceUpdates = (intervalMs = 30000) => {
+export const startFinanceUpdates = (intervalMs = 3600000) => {
   useFinanceStore.getState().fetchData();
-
   const interval = setInterval(() => {
     useFinanceStore.getState().fetchData();
   }, intervalMs);
