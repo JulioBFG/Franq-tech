@@ -11,6 +11,9 @@ const api = axios.create({
     "https://cors-anywhere.herokuapp.com/https://api.hgbrasil.com/finance",
   headers: {
     "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   },
 });
 

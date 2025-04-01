@@ -1,4 +1,3 @@
-// src/components/FinanceList.tsx
 import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { useFinanceStore } from "../../store/financeStore";
 import EmptyState from "../UI/EmptyState";

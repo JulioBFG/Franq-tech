@@ -45,14 +45,14 @@ Aplicação para visualização de cotações financeiras em tempo real, com aut
    cd finance-app
 
    # Instalar dependências
-   npm install
+   yarn install
    ```
 
 3. **Desenvolvimento**
 
    ```bash
    # Iniciar servidor de desenvolvimento
-   npm run dev
+   yarn dev
    ```
 
    O aplicativo estará disponível em: http://localhost:5173
@@ -61,10 +61,7 @@ Aplicação para visualização de cotações financeiras em tempo real, com aut
 
    ```bash
    # Gerar build otimizada
-   npm run build
-
-   # Visualizar build localmente
-   npm run preview
+   yarn build
    ```
 
 ## Estrutura do Projeto

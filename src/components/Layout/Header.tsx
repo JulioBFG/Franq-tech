@@ -1,8 +1,7 @@
-// src/components/Header.tsx
 import { Box, Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { useNavigate } from "react-router-dom";
+import Logo from "../../assets/LOGO.svg";
 import { useAuthStore } from "../../store/authStore";
-
 const Header = () => {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
@@ -26,7 +25,11 @@ const Header = () => {
       }}>
       <Flex justify="between" align="center">
         <Heading size="5" style={{ color: "#3861fb" }}>
-          Finance App
+          <img
+            src={Logo}
+            alt="Logo"
+            style={{ width: "125px", marginRight: "8px" }}
+          />
         </Heading>
 
         <Flex align="center" gap="4">

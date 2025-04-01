@@ -1,4 +1,3 @@
-// src/components/PriceChart.tsx
 import { Box, Card, Heading } from "@radix-ui/themes";
 import {
   CartesianGrid,
