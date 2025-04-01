@@ -64,7 +64,6 @@ const FinanceList = () => {
           />
         )}
 
-        {/* Lista de itens */}
         {items.length > 0 && (
           <Box style={{ maxHeight: "500px", overflowY: "auto" }}>
             {items.map((item) => (
