@@ -91,34 +91,9 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       name: "auth-storage",
       partialize: (state) => ({
         user: state.user,
+        isAuthenticated: state.isAuthenticated,
         sessionStartTime: state.sessionStartTime,
       }),
     }
   )
 );
-
-export const getSessionTimeLeft = (): string => {
-  const { sessionStartTime, isAuthenticated } = useAuthStore.getState();
-
-  if (!sessionStartTime || !isAuthenticated) return "00:00";
-
-  const elapsed = Date.now() - sessionStartTime;
-  const remaining = Math.max(0, SESSION_DURATION - elapsed);
-
-  const minutes = Math.floor(remaining / 60000);
-  const seconds = Math.floor((remaining % 60000) / 1000);
-
-  return `${minutes.toString().padStart(2, "0")}:${seconds
-    .toString()
-    .padStart(2, "0")}`;
-};
-
-export const initSessionChecker = () => {
-  useAuthStore.getState().checkSession();
-
-  const interval = setInterval(() => {
-    useAuthStore.getState().checkSession();
-  }, 60000);
-
-  return () => clearInterval(interval);
-};

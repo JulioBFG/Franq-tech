@@ -41,8 +41,7 @@ Aplicação para visualização de cotações financeiras em tempo real, com aut
 
    ```bash
    # Clonar o repositório
-   git clone https://github.com/seu-usuario/finance-app.git
-   cd finance-app
+   git clone https://github.com/JulioBFG/Franq-tech.git
 
    # Instalar dependências
    yarn install
@@ -67,7 +66,7 @@ Aplicação para visualização de cotações financeiras em tempo real, com aut
 ## Estrutura do Projeto
 
 ```
-finance-app/
+franq-tech/
 ├── src/
 │   ├── components/      # Componentes React
 │   ├── store/           # Estado global com Zustand
