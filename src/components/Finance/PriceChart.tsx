@@ -13,7 +13,7 @@ import {
 import { useFinanceStore } from "../../store/financeStore";
 import EmptyState from "../UI/EmptyState";
 
-const getChartColor = (variation) => {
+const getChartColor = (variation: number) => {
   return variation >= 0 ? "#10b981" : "#ef4444";
 };
 
